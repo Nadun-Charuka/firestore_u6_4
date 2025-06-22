@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firestore_u6_4/firebase_options.dart';
+import 'package:firestore_u6_4/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
@@ -15,7 +16,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(),
+      theme: ThemeData.dark(),
+      home: HomePage(),
     );
   }
 }
