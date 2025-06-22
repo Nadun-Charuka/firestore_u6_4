@@ -1,14 +1,15 @@
-import 'package:firestore_u6_4/services/task_firestore_services.dart';
+import 'package:firestore_u6_4/providers/task_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   TextEditingController controller = TextEditingController();
   @override
   void dispose() {
@@ -31,7 +32,9 @@ class _HomePageState extends State<HomePage> {
         actions: [
           TextButton(
             onPressed: () async {
-              await TaskFirestoreServices().addTask(controller.text.trim());
+              await ref
+                  .read(taskProvider.notifier)
+                  .addTask(controller.text.trim());
               controller.clear();
               if (!mounted) return;
               Navigator.pop(context);
@@ -45,7 +48,30 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final taskAsync = ref.watch(taskProvider);
+    final taskNotifier = ref.read(taskProvider.notifier);
     return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: taskAsync.when(
+          data: (tasks) => ListView.builder(
+            itemCount: tasks.length,
+            itemBuilder: (context, index) {
+              final task = tasks[index];
+              return ListTile(
+                title: Text(task.name),
+                trailing: IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.delete),
+                ),
+              );
+            },
+          ),
+          error: (error, stackTrace) =>
+              Center(child: Text("Error in displaying the tasks $error")),
+          loading: () => Center(child: CircularProgressIndicator()),
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showAddTaskDialog();
