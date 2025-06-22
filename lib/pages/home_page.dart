@@ -68,6 +68,17 @@ class _HomePageState extends ConsumerState<HomePage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("Task App"),
+        actions: [
+          IconButton(
+            onPressed: taskNotifier.refresh,
+            icon: Icon(
+              Icons.refresh,
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

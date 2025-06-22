@@ -12,6 +12,11 @@ class TaskNotifier extends AsyncNotifier<List<Task>> {
     return api.getTasks();
   }
 
+  Future<void> refresh() async {
+    state = AsyncLoading();
+    state = await AsyncValue.guard(() => api.getTasks());
+  }
+
   Future<void> addTask(String name) async {
     final task = Task(
       id: "",
