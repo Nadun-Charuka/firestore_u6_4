@@ -23,6 +23,19 @@ class TaskNotifier extends AsyncNotifier<List<Task>> {
     final created = await api.createTask(task);
     state = AsyncData([...state.value!, created]);
   }
+
+  Future<void> updateTask(Task updated) async {
+    final updateTask = await api.updateTask(updated);
+    state = AsyncData([
+      for (final task in state.value!)
+        if (task.id == updated.id) updateTask else task,
+    ]);
+  }
+
+  Future<void> deleteTask(String id) async {
+    await api.deletTask(id);
+    state = AsyncData(state.value!.where((t) => t.id != id).toList());
+  }
 }
 
 final taskProvider = AsyncNotifierProvider<TaskNotifier, List<Task>>(

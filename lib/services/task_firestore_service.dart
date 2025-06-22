@@ -14,4 +14,14 @@ class TaskFirestoreService {
     final snapshot = await _taskCollection.get();
     return snapshot.docs.map((e) => Task.fromJson(e.data(), e.id)).toList();
   }
+
+  Future<Task> updateTask(Task task) async {
+    await _taskCollection.doc(task.id).update(task.toJson());
+    final doc = await _taskCollection.doc(task.id).get();
+    return Task.fromJson(doc.data()!, task.id);
+  }
+
+  Future<void> deletTask(String id) async {
+    _taskCollection.doc(id).delete();
+  }
 }
